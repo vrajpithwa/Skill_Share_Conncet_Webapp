@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import "primereact/resources/themes/lara-light-cyan/theme.css";
-import LoginPage from './screens/Login'
+import AddUserForm from './components/Adduser';
+import MainScreen from './screens/MainScreen';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -9,7 +9,8 @@ function App() {
   return (
     <>
       <div>
-        <LoginPage />
+        {/* <AddUserForm /> */}
+<MainScreen></MainScreen>
        </div>
     </>
   )
