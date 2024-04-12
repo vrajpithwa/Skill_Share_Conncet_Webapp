@@ -1,5 +1,5 @@
 import firebase from '../firebase.js';
-import Product from '../Models/productModel.js';
+import Auth from '../Models/Model.js';
 import {
   getFirestore,
   collection,
@@ -13,17 +13,6 @@ import {
 
 const db = getFirestore(firebase);
 
-// Create product function:
-export const createProduct = async (req, res, next) => {
-    try {
-      const data = req.body;
-      await addDoc(collection(db, 'products'), data);
-      res.status(200).send('product created successfully');
-    } catch (error) {
-      res.status(400).send(error.message);
-    }
-  };
-
 // create user function:
 export const createUser = async (req, res, next) => {
   try {
@@ -35,9 +24,33 @@ export const createUser = async (req, res, next) => {
   }
 };
 // get all products 
-  export const getProducts = async (req, res, next) => {
+  export const getUserCredentials = async (req, res, next) => {
     try {
-      const products = await getDocs(collection(db, 'Users'));
+      const auth = await getDocs(collection(db, 'Users'));
+      const credentialsArray = [];
+      if (auth.empty) {
+        res.status(400).send('No Products found');
+      } else {
+        auth.forEach((doc) => {
+          const credentials = new Auth(
+            doc.id,
+            doc.data().name,
+            doc.data().email,
+            doc.data().password,
+          );
+          credentialsArray.push(credentials);
+        });
+  
+        res.status(200).send(credentialsArray);
+      }
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
+  };
+
+  export const getPosts = async (req, res, next) => {
+    try {
+      const products = await getDocs(collection(db, 'User Posts'));
       const productArray = [];
       if (products.empty) {
         res.status(400).send('No Products found');
@@ -45,8 +58,8 @@ export const createUser = async (req, res, next) => {
         products.forEach((doc) => {
           const product = new Product(
             doc.id,
-            doc.data().bio,
-            doc.data().username,
+            doc.data().UserEmail,
+            doc.data().Message ,
           );
           productArray.push(product);
         });
