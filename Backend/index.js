@@ -1,15 +1,24 @@
-import express from 'express';
-import cors from 'cors';
-import config from './config.js';
-import productRoute from './Routes/Route.js';
+import authRoutes from "./routes/auth.js";
+import cors from "cors";
+import multer from "multer";
+import cookieParser from "cookie-parser";
+import express from "express";
 
 const app = express();
-app.use(cors());
+//middlewares
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
 app.use(express.json());
-
-//routes
-app.use('/api', productRoute);
-
-app.listen(config.port, () =>
-  console.log(`Server is live @ ${config.hostUrl}`),
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
 );
+app.use(cookieParser());
+
+app.use("/api/auth", authRoutes);
+app.listen(8800, () => {
+  console.log("API working!");
+});
